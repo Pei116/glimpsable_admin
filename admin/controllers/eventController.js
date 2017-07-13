@@ -74,7 +74,7 @@ exports.addEvent = function (req, res, next) {
 
 	async.waterfall([
 		function checkParams(callback) {
-			if (!creatorId) {
+			if (!creatorId || creatorId == "null") {
 				return callback({message: "Choose creator"});
 			}
 			if (!name) {
@@ -91,18 +91,18 @@ exports.addEvent = function (req, res, next) {
   	    function addEvent(callback) {
 			var newEvent = new Event();
 			var series = [];
-			
-			if (req.files && req.files.cover) {
+
+			if (req.file) {
 				var newPhoto = new Photo();
-		    	var tmpPath = path.join(__dirname, '../../', req.files.cover.path);
-		        var targetPath = path.join(config.resourceDir, '/photos/', newPhoto.id, req.files.cover.originalname);
+		    	var tmpPath = path.join(__dirname, '../../', req.file.path);
+		        var targetPath = path.join(config.resourceDir, '/photos/', newPhoto.id, req.file.originalname);
 				
 		    	series.push(function uploadPhoto(callback) {
-		    		if (req.files.cover.size < 1) {
+		    		if (req.file.size < 1) {
 		    			return callback(new Error("Wrong file size"));
 		    		}
-		        	var tmpPath = path.join(__dirname, '../../', req.files.cover.path);
-		        	var targetPath = path.join(config.resourceDir, '/photos/', newPhoto.id, req.files.cover.originalname);
+		        	var tmpPath = path.join(__dirname, '../../', req.file.path);
+		        	var targetPath = path.join(config.resourceDir, '/photos/', newPhoto.id, req.file.originalname);
 		    		fs.mkdir(path.dirname(targetPath), 0777, function (err) {
 		    			if (err) return callback(err);
 		       	   	 	mv(tmpPath, targetPath, function (err) {
@@ -111,7 +111,7 @@ exports.addEvent = function (req, res, next) {
 		    		});
 		   	    });
 				series.push(function saveThumb(callback) {
-					var thumbPath = path.join(config.resourceDir, '/thumbs/', newPhoto.id, req.files.cover.originalname);
+					var thumbPath = path.join(config.resourceDir, '/thumbs/', newPhoto.id, req.file.originalname);
 		    		fs.mkdir(path.dirname(thumbPath), 0777, function (err) {
 		    			if (err) return callback(err);
 				    	gm(targetPath)

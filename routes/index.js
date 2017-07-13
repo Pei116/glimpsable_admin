@@ -8,6 +8,9 @@ var userController = require('../admin/controllers/userController');
 var pushController = require('../admin/controllers/pushController');
 var venueController = require('../admin/controllers/venueController');
 var eventController = require('../admin/controllers/eventController');
+var multer = require('multer');
+
+var upload = multer({dest: "./uploads"});
 
 exports.setupAll = function(router) {
 	router.get('/', appController.index);
@@ -30,7 +33,8 @@ exports.setupAll = function(router) {
 	router.post('/push', pushController.sendPush);
 
 	router.get('/event/add', eventController.showAddEvent);
-	router.post('/event/add', eventController.addEvent);
+	// router.route('/event/add').post(upload.single('cover'), eventController.addEvent);
+	router.post('/event/add', upload.single('cover'), eventController.addEvent);
 
 	router.get('/event/search', eventController.showSearchEvent);
 	router.post('/event/blast', eventController.blastEvent);

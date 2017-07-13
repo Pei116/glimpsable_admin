@@ -21,7 +21,6 @@ exports.showLogin = function(req, res) {
 exports.postLogin = function(req, res, next) {
   // ask passport to authenticate
   passport.authenticate('local', function(err, user, info) {
-    console.log(user);
     if (err) {
       // if error happens
       return next(err);

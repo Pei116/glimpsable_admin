@@ -30,6 +30,7 @@ module.exports = function(passport) {
 
 		// find a user whose username is the same as the forms username
 		// we are checking to see if the user trying to login already exists
+//    console.log(user.generateHash(password));
     User.findOne({username: username}, function(err, user) {
         if (err) {
           return done(err);
